@@ -48,13 +48,42 @@
                         <span class="text-gray-500 text-xs uppercase">Category</span>
                         <span class="font-bold text-sm" id="book-category">-</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 text-xs uppercase">System Stock</span>
-                        <span class="font-bold text-sm" id="book-stock">-</span>
-                    </div>
                 </div>
 
                 <div id="action-area" class="w-full">
+                    <div id="condition-form" class="text-left mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="condition">
+                            Kondisi Buku
+                        </label>
+                        <select id="condition-input" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline mb-3">
+                            <option value="">-- Pilih Kondisi --</option>
+                            <option value="Baik">Baik</option>
+                            <option value="Barcode lepas">Barcode lepas</option>
+                            <option value="Barcode rusak">Barcode rusak</option>
+                            <option value="Barcode salah">Barcode salah</option>
+                            <option value="Barcode tidak ada">Barcode tidak ada</option>
+                            <option value="Label lepas">Label lepas</option>
+                            <option value="Label salah">Label salah</option>
+                            <option value="Halaman sobek">Halaman sobek</option>
+                            <option value="Halaman rusak">Halaman rusak</option>
+                            <option value="Halaman lepas">Halaman lepas</option>
+                            <option value="Halaman hilang">Halaman hilang</option>
+                            <option value="Sampul sobek">Sampul sobek</option>
+                            <option value="Sampul rusak">Sampul rusak</option>
+                            <option value="Sampul lepas">Sampul lepas</option>
+                            <option value="Sampul tidak ada">Sampul tidak ada</option>
+                            <option value="Sampul rusak kena air">Sampul rusak kena air</option>
+                            <option value="sampul rusak dimakan kutu">Sampul rusak dimakan kutu</option>
+                            <option value="Sampul rusak dimakan rayap">Sampul rusak dimakan rayap</option>
+                            <option value="Sampul rusak kena debu">Sampul rusak kena debu</option>
+                        </select>
+                        
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="notes">
+                            Keterangan Tambahan (Opsional)
+                        </label>
+                        <textarea id="notes-input" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+
                     <p id="status-badge" class="hidden mb-4 px-3 py-1 rounded-full text-sm font-bold inline-block"></p>
                     
                     <button id="confirm-btn" class="w-full bg-orange-500 text-white font-bold py-3 px-4 rounded-full shadow hover:bg-orange-600 transition duration-150">
@@ -146,7 +175,6 @@
             bookTitle.innerText = book.title;
             bookAuthor.innerText = book.author;
             bookCategory.innerText = book.category;
-            bookStock.innerText = book.stock_system;
             
             if (book.cover_url) {
                 bookCover.src = book.cover_url;
@@ -164,12 +192,19 @@
             // Reset state forcefully to remove inline-block and other conflicting classes
             statusBadge.className = 'hidden'; 
             confirmBtn.classList.add('hidden');
+            const conditionForm = document.getElementById('condition-form');
 
             if (status === 'verified') {
                 statusBadge.innerText = 'Sudah Diverifikasi oleh ' + (verifiedBy ? verifiedBy : 'Sistem');
                 statusBadge.className = 'mb-4 px-3 py-1 rounded-full text-sm font-bold inline-block bg-green-100 text-green-800';
+                conditionForm.classList.add('hidden'); // Hide form if already verified
             } else {
                 confirmBtn.classList.remove('hidden');
+                conditionForm.classList.remove('hidden'); // Show form if pending
+                
+                // Clear inputs
+                document.getElementById('condition-input').value = '';
+                document.getElementById('notes-input').value = '';
             }
         }
 
@@ -190,7 +225,9 @@
                     },
                     body: JSON.stringify({
                         book_id: currentBookId,
-                        status: 'verified'
+                        status: 'verified',
+                        condition: document.getElementById('condition-input').value,
+                        notes: document.getElementById('notes-input').value
                     })
                 });
 

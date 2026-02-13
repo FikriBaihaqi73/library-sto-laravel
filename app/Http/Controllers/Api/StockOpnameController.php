@@ -35,6 +35,8 @@ class StockOpnameController extends Controller
         $request->validate([
             'book_id' => 'required|exists:books,id',
             'status' => 'required|string',
+            'condition' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
 
         // Double check before saving to prevent race conditions
@@ -50,6 +52,8 @@ class StockOpnameController extends Controller
             'user_id' => auth()->id(),
             'book_id' => $request->book_id,
             'status' => $request->status,
+            'condition' => $request->condition,
+            'notes' => $request->notes,
         ]);
 
         return response()->json([

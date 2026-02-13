@@ -14,6 +14,8 @@ class StockOpname extends Model
         'user_id',
         'book_id',
         'status',
+        'condition',
+        'notes',
     ];
 
     public function user()

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->string('status')->default('verified'); // verified, missing, mismatch
+            $table->string('condition')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

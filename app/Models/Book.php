@@ -15,7 +15,6 @@ class Book extends Model
         'isbn',
         'author',
         'cover_url',
-        'stock_system',
         'category',
     ];
 

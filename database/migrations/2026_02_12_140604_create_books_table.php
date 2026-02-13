@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('isbn')->unique();
             $table->string('author');
             $table->string('cover_url')->nullable();
-            $table->integer('stock_system')->default(0);
             $table->string('category');
             $table->timestamps();
         });

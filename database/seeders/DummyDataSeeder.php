@@ -15,6 +15,7 @@ class DummyDataSeeder extends Seeder
         // Create Admin User
         $user = \App\Models\User::create([
             'name' => 'Admin Library',
+            'role' => 'admin',
             'email' => 'admin@library.com',
             'password' => bcrypt('password'),
         ]);
@@ -22,66 +23,67 @@ class DummyDataSeeder extends Seeder
         // Create Staff User
         \App\Models\User::create([
             'name' => 'Staff Library',
+            'role' => 'staff',
             'email' => 'staff@library.com',
             'password' => bcrypt('password'),
         ]);
 
         // Create Dummy Books
-        $books = [
-            [
-                'title' => 'The Great Gatsby',
-                'isbn' => '9780743273565',
-                'author' => 'F. Scott Fitzgerald',
-                'stock_system' => 10,
-                'category' => 'Fiction',
-            ],
-            [
-                'title' => 'Clean Code',
-                'isbn' => '9780132350884',
-                'author' => 'Robert C. Martin',
-                'stock_system' => 5,
-                'category' => 'Programming',
-            ],
-            [
-                'title' => 'Laravel Up & Running',
-                'isbn' => '9781492041214',
-                'author' => 'Matt Stauffer',
-                'stock_system' => 8,
-                'category' => 'Programming',
-            ],
-             [
-                'title' => 'Atomic Habits',
-                'isbn' => '9780735211292',
-                'author' => 'James Clear',
-                'stock_system' => 15,
-                'category' => 'Self-Help',
-            ],
-            [
-                'title' => 'Harry Potter and the Sorcerer\'s Stone',
-                'isbn' => '9780590353427',
-                'author' => 'J.K. Rowling',
-                'stock_system' => 20,
-                'category' => 'Fiction',
-            ],
-            [
-                'title' => 'Thinking, Fast and Slow',
-                'isbn' => '9780374275631',
-                'author' => 'Daniel Kahneman',
-                'stock_system' => 12,
-                'category' => 'Psychology',
-            ],
-            [
-                'title' => 'Zero to One',
-                'isbn' => '9780804139298',
-                'author' => 'Peter Thiel',
-                'stock_system' => 7,
-                'category' => 'Business',
-            ],
-        ];
+        \App\Models\Book::create([
+            'title' => 'The Great Gatsby',
+            'isbn' => '9780743273565',
+            'author' => 'F. Scott Fitzgerald',
+            'cover_url' => 'https://m.media-amazon.com/images/I/81fHk+ti2WL._SL1500_.jpg',
+            'category' => 'Fiction',
+        ]);
 
-        foreach ($books as $book) {
-            \App\Models\Book::create($book);
-        }
+        \App\Models\Book::create([
+            'title' => 'The Pragmatic Programmer',
+            'isbn' => '9780201616224',
+            'author' => 'Andrew Hunt',
+            'cover_url' => 'https://m.media-amazon.com/images/I/41as+WafrFL._SL500_.jpg',
+            'category' => 'Programming',
+        ]);
+
+        \App\Models\Book::create([
+            'title' => 'Clean Code',
+            'isbn' => '9780132350884',
+            'author' => 'Robert C. Martin',
+            'cover_url' => 'https://m.media-amazon.com/images/I/41jEbK-jG+L._SL500_.jpg',
+            'category' => 'Programming',
+        ]);
+
+        \App\Models\Book::create([
+            'title' => 'Atomic Habits',
+            'isbn' => '9780735211292',
+            'author' => 'James Clear',
+            'cover_url' => 'https://m.media-amazon.com/images/I/81wgcld4wxL._SL1500_.jpg',
+            'category' => 'Self-Help',
+        ]);
+
+         \App\Models\Book::create([
+            'title' => 'The Psychology of Money',
+            'isbn' => '9780857197689',
+            'author' => 'Morgan Housel',
+            'cover_url' => 'https://m.media-amazon.com/images/I/81cpDaCJJyL._SL1500_.jpg',
+            'category' => 'Finance',
+        ]);
+
+         \App\Models\Book::create([
+            'title' => 'Deep Work',
+            'isbn' => '9781455586691',
+            'author' => 'Cal Newport',
+            'cover_url' => 'https://m.media-amazon.com/images/I/11J3QM0-NBL._SL500_.jpg',
+            'category' => 'Productivity',
+        ]);
+
+         \App\Models\Book::create([
+            'title' => 'Rich Dad Poor Dad',
+            'isbn' => '9781612680194',
+            'author' => 'Robert Kiyosaki',
+            'cover_url' => 'https://m.media-amazon.com/images/I/81bsw6fnUiL._SL1500_.jpg',
+            'category' => 'Finance',
+        ]);
         
         // Stock opnames removed to start fresh
     }

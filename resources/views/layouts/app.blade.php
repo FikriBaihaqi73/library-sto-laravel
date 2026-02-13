@@ -37,6 +37,9 @@
                             <a href="/scan" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                 Scan Book
                             </a>
+                             <a href="/admin/dashboard" id="nav-admin-link" class="hidden inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                                Admin Dashboard
+                            </a>
                         </div>
                     </div>
                      <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -65,6 +68,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             const nav = document.getElementById('main-nav');
+            const adminLink = document.getElementById('nav-admin-link');
             
             // Simple check to show/hide nav. Ideally middleware handles redirect.
             if (token && nav) {
@@ -78,6 +82,46 @@
                        link.classList.remove('border-transparent', 'text-gray-500');
                    }
                });
+               
+               // Initial Role Check (Fast)
+               checkRole();
+
+               // Force Refresh User Data (Reliable)
+               fetch('/api/auth/me', {
+                   headers: { 'Authorization': 'Bearer ' + token }
+               })
+               .then(res => {
+                   if(res.ok) return res.json();
+                   throw new Error('Failed to fetch user');
+               })
+               .then(userData => {
+                   localStorage.setItem('user', JSON.stringify(userData));
+                   checkRole(); // Re-check with fresh data
+               })
+               .catch(err => {
+                   console.error(err);
+                   // If token invalid, logout
+                   // localStorage.removeItem('token');
+                   // localStorage.removeItem('user');
+                   // window.location.href = '/login';
+               });
+            }
+
+            function checkRole() {
+                const userStr = localStorage.getItem('user');
+                const adminLink = document.getElementById('nav-admin-link');
+                
+                if (userStr && adminLink) {
+                    const user = JSON.parse(userStr);
+                    if (user && user.role === 'admin') {
+                        adminLink.style.display = 'inline-flex';
+                        adminLink.classList.remove('hidden');
+                    } else {
+                        adminLink.style.display = 'none';
+                    }
+                } else if (adminLink) {
+                    adminLink.style.display = 'none';
+                }
             }
 
             const logoutBtn = document.getElementById('logout-btn');
@@ -95,6 +139,7 @@
                         console.error(e);
                     }
                     localStorage.removeItem('token');
+                    localStorage.removeItem('user'); // Clear user data
                     window.location.href = '/login';
                 });
             }

@@ -12,10 +12,30 @@ class Book extends Model
 
     protected $fillable = [
         'title',
-        'isbn',
         'author',
-        'cover_url',
-        'category',
+        'publisher',
+        'place_of_publication',
+        'year_of_publication',
+        'isbn_issn',
+        'language',
+        'collation',
+        'gmd_type',
+        'classification',
+        'call_number',
+        'subject',
+        'abstract',
+        'cover_image',
+        'total_items',
+        'edition',
+        'frequency_of_publication',
+        'series_title',
+        'attachment',
+        'is_featured',
+    ];
+
+    protected $casts = [
+        'is_featured' => 'boolean',
+        'total_items' => 'integer',
     ];
 
     public function stockOpnames()

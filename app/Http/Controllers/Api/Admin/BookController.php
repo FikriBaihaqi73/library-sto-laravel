@@ -21,11 +21,26 @@ class BookController extends Controller
     public function store(\Illuminate\Http\Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'isbn' => 'required|string|unique:books,isbn',
-            'author' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'cover_url' => 'nullable|url',
+            'title'                    => 'required|string|max:255',
+            'author'                   => 'required|string|max:255',
+            'publisher'                => 'required|string|max:255',
+            'place_of_publication'     => 'required|string|max:255',
+            'year_of_publication'      => 'required|string|max:4',
+            'isbn_issn'                => 'nullable|string|max:30',
+            'language'                 => 'nullable|string|max:50',
+            'collation'                => 'nullable|string|max:255',
+            'gmd_type'                 => 'nullable|string|max:100',
+            'classification'           => 'nullable|string|max:100',
+            'call_number'              => 'nullable|string|max:100',
+            'subject'                  => 'nullable|string|max:255',
+            'abstract'                 => 'nullable|string',
+            'cover_image'              => 'nullable|string|max:500',
+            'total_items'              => 'nullable|integer|min:0',
+            'edition'                  => 'nullable|string|max:50',
+            'frequency_of_publication' => 'nullable|string|max:100',
+            'series_title'             => 'nullable|string|max:255',
+            'attachment'               => 'nullable|string|max:500',
+            'is_featured'              => 'nullable|boolean',
         ]);
 
         $book = \App\Models\Book::create($validated);
@@ -49,11 +64,26 @@ class BookController extends Controller
         $book = \App\Models\Book::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'sometimes|string|max:255',
-            'isbn' => 'sometimes|string|unique:books,isbn,' . $book->id,
-            'author' => 'sometimes|string|max:255',
-            'category' => 'sometimes|string|max:255',
-            'cover_url' => 'nullable|url',
+            'title'                    => 'sometimes|string|max:255',
+            'author'                   => 'sometimes|string|max:255',
+            'publisher'                => 'sometimes|string|max:255',
+            'place_of_publication'     => 'sometimes|string|max:255',
+            'year_of_publication'      => 'sometimes|string|max:4',
+            'isbn_issn'                => 'nullable|string|max:30',
+            'language'                 => 'nullable|string|max:50',
+            'collation'                => 'nullable|string|max:255',
+            'gmd_type'                 => 'nullable|string|max:100',
+            'classification'           => 'nullable|string|max:100',
+            'call_number'              => 'nullable|string|max:100',
+            'subject'                  => 'nullable|string|max:255',
+            'abstract'                 => 'nullable|string',
+            'cover_image'              => 'nullable|string|max:500',
+            'total_items'              => 'nullable|integer|min:0',
+            'edition'                  => 'nullable|string|max:50',
+            'frequency_of_publication' => 'nullable|string|max:100',
+            'series_title'             => 'nullable|string|max:255',
+            'attachment'               => 'nullable|string|max:500',
+            'is_featured'              => 'nullable|boolean',
         ]);
 
         $book->update($validated);

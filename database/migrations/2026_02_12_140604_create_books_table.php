@@ -14,10 +14,25 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('isbn')->unique();
             $table->string('author');
-            $table->string('cover_url')->nullable();
-            $table->string('category');
+            $table->string('publisher');
+            $table->string('place_of_publication');
+            $table->string('year_of_publication');
+            $table->string('isbn_issn')->nullable();
+            $table->string('language')->nullable();
+            $table->string('collation')->nullable();
+            $table->string('gmd_type')->nullable(); // General Material Designation
+            $table->string('classification')->nullable();
+            $table->string('call_number')->nullable();
+            $table->string('subject')->nullable();
+            $table->text('abstract')->nullable();
+            $table->string('cover_image')->nullable();
+            $table->integer('total_items')->default(0);
+            $table->string('edition')->nullable();
+            $table->string('frequency_of_publication')->nullable();
+            $table->string('series_title')->nullable();
+            $table->string('attachment')->nullable();
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });
     }

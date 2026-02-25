@@ -4,16 +4,23 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         
-        <div class="mb-6 px-4 sm:px-0 flex justify-between items-center">
+        <div class="mb-6 px-4 sm:px-0 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <a href="/admin/dashboard" class="text-gray-500 hover:text-gray-700 mb-2 inline-block">
                     <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
                 </a>
                 <h2 class="text-2xl font-bold text-gray-800">User Management</h2>
             </div>
-            <button onclick="openModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow">
-                <i class="fa-solid fa-plus"></i> Add New User
-            </button>
+            
+            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                <div class="relative w-full sm:w-64">
+                    <input type="text" id="search-input" onkeyup="if(event.key === 'Enter') searchUsers()" placeholder="Search name, email..." class="w-full border rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <button onclick="openModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow whitespace-nowrap">
+                    <i class="fa-solid fa-plus"></i> Add New User
+                </button>
+            </div>
         </div>
 
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg overflow-x-auto">
@@ -31,6 +38,15 @@
                     <tr><td colspan="5" class="text-center py-4">Loading...</td></tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4 flex flex-col sm:flex-row justify-between items-center bg-white p-4 shadow-sm rounded-lg gap-4">
+            <div id="pagination-info" class="text-sm text-gray-700">
+                Loading pagination info...
+            </div>
+            <div id="pagination-links" class="flex gap-1">
+                <!-- Pagination buttons -->
+            </div>
         </div>
 
     </div>
@@ -74,21 +90,44 @@
 @push('scripts')
 <script>
     let token = localStorage.getItem('token');
+    let current_page = 1;
+    let search_query = '';
     
     document.addEventListener('DOMContentLoaded', () => {
         if (!token) window.location.href = '/login';
         fetchUsers();
     });
 
-    async function fetchUsers() {
+    window.searchUsers = () => {
+        search_query = document.getElementById('search-input').value;
+        current_page = 1;
+        fetchUsers();
+    }
+
+    async function fetchUsers(page = 1) {
+        current_page = page;
+        const tbody = document.getElementById('user-list');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8"><i class="fa-solid fa-spinner fa-spin text-blue-500 text-2xl"></i></td></tr>';
+
         try {
-            const res = await fetch('/api/admin/users', {
-                headers: { 'Authorization': 'Bearer ' + token }
+            const url = `/api/admin/users?page=${page}&search=${encodeURIComponent(search_query)}`;
+            const res = await fetch(url, {
+                headers: { 
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                }
             });
-            const users = await res.json();
-            const tbody = document.getElementById('user-list');
+            const response = await res.json();
+            const users = response.data;
+            
             tbody.innerHTML = '';
             
+            if (!users.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-400">No users found.</td></tr>';
+                renderPagination(response);
+                return;
+            }
+
             users.forEach(user => {
                 const createdAt = new Date(user.created_at).toLocaleDateString();
                 const roleBadge = user.role === 'admin' 
@@ -96,7 +135,7 @@
                     : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Staff</span>';
 
                 tbody.innerHTML += `
-                    <tr>
+                    <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${user.name}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${roleBadge}</td>
@@ -108,8 +147,47 @@
                     </tr>
                 `;
             });
+
+            renderPagination(response);
         } catch (e) {
             console.error(e);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Failed to load users.</td></tr>';
+        }
+    }
+
+    function renderPagination(response) {
+        const info = document.getElementById('pagination-info');
+        const links = document.getElementById('pagination-links');
+        
+        info.innerText = `Showing ${response.from ?? 0}-${response.to ?? 0} of ${response.total} users`;
+        
+        links.innerHTML = '';
+        
+        if (response.last_page > 1) {
+            if (response.current_page > 1) {
+                links.innerHTML += `<button onclick="fetchUsers(${response.current_page - 1})" class="px-3 py-1 border rounded hover:bg-gray-100 text-sm"><i class="fa-solid fa-chevron-left"></i></button>`;
+            }
+
+            let start = Math.max(1, response.current_page - 2);
+            let end = Math.min(response.last_page, response.current_page + 2);
+
+            if (start > 1) {
+                links.innerHTML += `<button onclick="fetchUsers(1)" class="px-3 py-1 border rounded hover:bg-gray-100 text-sm">1</button>`;
+                if (start > 2) links.innerHTML += `<span class="px-2 text-gray-400">...</span>`;
+            }
+
+            for (let i = start; i <= end; i++) {
+                links.innerHTML += `<button onclick="fetchUsers(${i})" class="px-3 py-1 border rounded ${i === response.current_page ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'} text-sm">${i}</button>`;
+            }
+
+            if (end < response.last_page) {
+                if (end < response.last_page - 1) links.innerHTML += `<span class="px-2 text-gray-400">...</span>`;
+                links.innerHTML += `<button onclick="fetchUsers(${response.last_page})" class="px-3 py-1 border rounded hover:bg-gray-100 text-sm">${response.last_page}</button>`;
+            }
+
+            if (response.current_page < response.last_page) {
+                links.innerHTML += `<button onclick="fetchUsers(${response.current_page + 1})" class="px-3 py-1 border rounded hover:bg-gray-100 text-sm"><i class="fa-solid fa-chevron-right"></i></button>`;
+            }
         }
     }
 

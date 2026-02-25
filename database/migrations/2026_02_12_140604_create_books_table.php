@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('publisher');
             $table->string('place_of_publication');
             $table->string('year_of_publication');
+            $table->text('item_code')->nullable();
             $table->string('isbn_issn')->nullable();
             $table->string('language')->nullable();
             $table->string('collation')->nullable();

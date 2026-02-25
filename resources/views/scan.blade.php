@@ -16,7 +16,7 @@
             </div>
             
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Scan Book Barcode</h2>
-            <p class="text-gray-500 mb-6">Enter ISBN or setup a barcode scanner</p>
+            <p class="text-gray-500 mb-6">Enter ISBN, Item Code or setup a barcode scanner</p>
 
             <form id="scan-form" class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -24,7 +24,7 @@
                 </div>
                 <input type="text" id="isbn-input" 
                     class="block w-full pl-10 pr-3 py-4 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 sm:text-lg" 
-                    placeholder="Enter ISBN..." autofocus>
+                    placeholder="Enter ISBN/item code..." autofocus>
                 <button type="submit" class="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <i class="fa-solid fa-arrow-right text-orange-500 hover:text-orange-700 font-bold text-xl"></i>
                 </button>

@@ -29,6 +29,7 @@ class BookMigrationSeeder extends Seeder
         $gmds = [];
         $biblioAuthors = [];
         $itemCounts = []; // biblio_id => count
+        $itemCodes = []; // biblio_id => [codes]
 
         $handle = fopen($sqlFilePath, "r");
         $currentTable = null;
@@ -60,6 +61,9 @@ class BookMigrationSeeder extends Seeder
                     $biblioId = $values[1]; // Index 1 is biblio_id in item table
                     if ($biblioId) {
                         $itemCounts[$biblioId] = ($itemCounts[$biblioId] ?? 0) + 1;
+                        if (isset($values[4])) {
+                            $itemCodes[$biblioId][] = $values[4]; // Index 4 is item_code
+                        }
                     }
                 }
             }
@@ -111,6 +115,7 @@ class BookMigrationSeeder extends Seeder
                     'attachment'            => $values[16] ?? null,
                     'edition'               => $values[3] ?? null,
                     'total_items'           => $itemCounts[$biblioId] ?? 0,
+                    'item_code'             => isset($itemCodes[$biblioId]) ? implode(', ', $itemCodes[$biblioId]) : null,
                     'is_featured'           => (isset($values[18]) && $values[18] == 1) ? true : false,
                     'created_at'            => $now,
                     'updated_at'            => $now,

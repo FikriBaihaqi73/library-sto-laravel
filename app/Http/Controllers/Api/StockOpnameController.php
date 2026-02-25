@@ -11,7 +11,9 @@ class StockOpnameController extends Controller
 {
     public function searchBook($isbn)
     {
-        $book = Book::where('isbn_issn', $isbn)->first();
+        $book = Book::where('isbn_issn', $isbn)
+            ->orWhere('item_code', 'like', "%{$isbn}%")
+            ->first();
 
         if (!$book) {
             return response()->json(['message' => 'Book not found'], 404);

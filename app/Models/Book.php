@@ -16,6 +16,7 @@ class Book extends Model
         'publisher',
         'place_of_publication',
         'year_of_publication',
+        'item_code',
         'isbn_issn',
         'language',
         'collation',

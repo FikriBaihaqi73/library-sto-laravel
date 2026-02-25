@@ -20,7 +20,8 @@ class BookController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('isbn_issn', 'like', "%{$search}%");
+                  ->orWhere('isbn_issn', 'like', "%{$search}%")
+                  ->orWhere('item_code', 'like', "%{$search}%");
             });
         }
 
@@ -38,6 +39,7 @@ class BookController extends Controller
             'publisher'                => 'required|string|max:255',
             'place_of_publication'     => 'required|string|max:255',
             'year_of_publication'      => 'required|string|max:4',
+            'item_code'                => 'nullable|string',
             'isbn_issn'                => 'nullable|string|max:30',
             'language'                 => 'nullable|string|max:50',
             'collation'                => 'nullable|string|max:255',
@@ -81,6 +83,7 @@ class BookController extends Controller
             'publisher'                => 'sometimes|string|max:255',
             'place_of_publication'     => 'sometimes|string|max:255',
             'year_of_publication'      => 'sometimes|string|max:4',
+            'item_code'                => 'nullable|string',
             'isbn_issn'                => 'nullable|string|max:30',
             'language'                 => 'nullable|string|max:50',
             'collation'                => 'nullable|string|max:255',

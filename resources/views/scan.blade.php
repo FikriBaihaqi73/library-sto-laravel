@@ -61,6 +61,10 @@
                         <span class="font-semibold text-sm text-right ml-4 font-mono" id="book-isbn">-</span>
                     </div>
                     <div class="flex justify-between">
+                        <span class="text-gray-500 text-xs uppercase">Item Code</span>
+                        <span class="font-semibold text-sm text-right ml-4 font-mono" id="book-item-code">-</span>
+                    </div>
+                    <div class="flex justify-between">
                         <span class="text-gray-500 text-xs uppercase">Bahasa</span>
                         <span class="font-semibold text-sm text-right ml-4" id="book-language">-</span>
                     </div>
@@ -186,6 +190,7 @@
         const bookYear = document.getElementById('book-year');
         const bookPlace = document.getElementById('book-place');
         const bookIsbn = document.getElementById('book-isbn');
+        const bookItemCode = document.getElementById('book-item-code');
         const bookLanguage = document.getElementById('book-language');
         const bookCallNumber = document.getElementById('book-call-number');
         const bookGmd = document.getElementById('book-gmd');
@@ -247,6 +252,7 @@
             bookPlace.innerText = book.place_of_publication ?? '-';
             bookYear.innerText = book.year_of_publication ?? '-';
             bookIsbn.innerText = book.isbn_issn ?? '-';
+            bookItemCode.innerText = book.item_code ?? '-';
             bookLanguage.innerText = book.language ?? '-';
             bookClassification.innerText = book.classification ?? '-';
             bookCallNumber.innerText = book.call_number ?? '-';

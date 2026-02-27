@@ -31,6 +31,7 @@
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengarang</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penerbit</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Code</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISBN/ISSN</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Klasifikasi</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Panggil</th>
@@ -94,6 +95,11 @@
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-1">ISBN/ISSN</label>
                     <input type="text" id="isbn_issn" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <!-- Item Code -->
+                <div class="md:col-span-2">
+                    <label class="block text-gray-700 text-sm font-bold mb-1">Item Code</label>
+                    <textarea id="item_code" rows="2" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Kode item (pisahkan dengan koma jika lebih dari satu)"></textarea>
                 </div>
                 <!-- Bahasa -->
                 <div>
@@ -181,7 +187,7 @@
 
     const fields = [
         'title', 'author', 'publisher', 'place_of_publication', 'year_of_publication',
-        'isbn_issn', 'language', 'collation', 'gmd_type', 'classification',
+        'isbn_issn', 'item_code', 'language', 'collation', 'gmd_type', 'classification',
         'call_number', 'subject', 'abstract', 'cover_image', 'total_items',
         'edition', 'frequency_of_publication', 'series_title', 'attachment'
     ];
@@ -231,6 +237,7 @@
                         <td class="px-4 py-3 text-sm text-gray-500">${book.author ?? '-'}</td>
                         <td class="px-4 py-3 text-sm text-gray-500">${book.publisher ?? '-'}</td>
                         <td class="px-4 py-3 text-sm text-gray-500">${book.year_of_publication ?? '-'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 font-mono">${book.item_code ?? '-'}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 font-mono">${book.isbn_issn ?? '-'}</td>
                         <td class="px-4 py-3 text-sm text-gray-500">${book.classification ?? '-'}</td>
                         <td class="px-4 py-3 text-sm text-gray-500">${book.call_number ?? '-'}</td>

@@ -16,6 +16,7 @@ class StockOpname extends Model
         'status',
         'condition',
         'notes',
+        'earned_commission',
     ];
 
     public function user()

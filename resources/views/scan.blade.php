@@ -112,31 +112,25 @@
 
                 <div id="action-area" class="w-full">
                     <div id="condition-form" class="text-left mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="condition">
-                            Kondisi Buku
+                        <label class="block text-gray-700 text-sm font-bold mb-3" for="condition">
+                            Kondisi Buku (Bisa pilih lebih dari satu)
                         </label>
-                        <select id="condition-input" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline mb-3">
-                            <option value="">-- Pilih Kondisi --</option>
-                            <option value="Baik">Baik</option>
-                            <option value="Barcode lepas">Barcode lepas</option>
-                            <option value="Barcode rusak">Barcode rusak</option>
-                            <option value="Barcode salah">Barcode salah</option>
-                            <option value="Barcode tidak ada">Barcode tidak ada</option>
-                            <option value="Label lepas">Label lepas</option>
-                            <option value="Label salah">Label salah</option>
-                            <option value="Halaman sobek">Halaman sobek</option>
-                            <option value="Halaman rusak">Halaman rusak</option>
-                            <option value="Halaman lepas">Halaman lepas</option>
-                            <option value="Halaman hilang">Halaman hilang</option>
-                            <option value="Sampul sobek">Sampul sobek</option>
-                            <option value="Sampul rusak">Sampul rusak</option>
-                            <option value="Sampul lepas">Sampul lepas</option>
-                            <option value="Sampul tidak ada">Sampul tidak ada</option>
-                            <option value="Sampul rusak kena air">Sampul rusak kena air</option>
-                            <option value="sampul rusak dimakan kutu">Sampul rusak dimakan kutu</option>
-                            <option value="Sampul rusak dimakan rayap">Sampul rusak dimakan rayap</option>
-                            <option value="Sampul rusak kena debu">Sampul rusak kena debu</option>
-                        </select>
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            @php
+                                $options = [
+                                    "Baik", "Barcode lepas", "Barcode rusak", "Barcode salah", "Barcode tidak ada",
+                                    "Label lepas", "Label salah", "Halaman sobek", "Halaman rusak", "Halaman lepas",
+                                    "Halaman hilang", "Sampul sobek", "Sampul rusak", "Sampul lepas", "Sampul tidak ada",
+                                    "Sampul rusak kena air", "Sampul rusak dimakan kutu", "Sampul rusak dimakan rayap", "Sampul rusak kena debu"
+                                ];
+                            @endphp
+                            @foreach($options as $option)
+                                <label class="flex items-center p-2 rounded border border-gray-200 cursor-pointer hover:bg-gray-50 transition duration-150">
+                                    <input type="checkbox" name="condition" value="{{ $option }}" class="condition-checkbox w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500">
+                                    <span class="ml-2 text-xs text-gray-600 leading-tight">{{ $option }}</span>
+                                </label>
+                            @endforeach
+                        </div>
                         
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="notes">
                             Keterangan Tambahan (Opsional)
@@ -163,9 +157,13 @@
             <i class="fa-solid fa-check text-3xl text-green-500"></i>
         </div>
         <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Data Tersimpan!</h3>
-        <p class="text-sm text-gray-500 mb-6">
+        <p class="text-sm text-gray-500 mb-4">
             Stok opname untuk buku ini telah berhasil diverifikasi.
         </p>
+        <div id="commission-earned-box" class="bg-orange-50 border border-orange-100 rounded-lg p-3 mb-6 hidden">
+            <p class="text-xs text-orange-600 uppercase font-bold tracking-wider mb-1">Komisi Didapatkan</p>
+            <p class="text-2xl font-black text-orange-700">Rp <span id="earned-amount">0</span></p>
+        </div>
         <button id="close-modal" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-gray-700 hover:bg-gray-300 focus:outline-none sm:text-sm">
             Tutup & Scan Lagi
         </button>
@@ -292,7 +290,7 @@
                 conditionForm.classList.remove('hidden'); // Show form if pending
                 
                 // Clear inputs
-                document.getElementById('condition-input').value = '';
+                document.querySelectorAll('.condition-checkbox').forEach(cb => cb.checked = false);
                 document.getElementById('notes-input').value = '';
             }
         }
@@ -305,6 +303,9 @@
             confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
             try {
+                const checkedConditions = Array.from(document.querySelectorAll('.condition-checkbox:checked'))
+                    .map(cb => cb.value);
+
                 const response = await fetch('/api/stock-opname', {
                     method: 'POST',
                     headers: {
@@ -315,12 +316,19 @@
                     body: JSON.stringify({
                         book_id: currentBookId,
                         status: 'verified',
-                        condition: document.getElementById('condition-input').value,
+                        condition: checkedConditions.join(', '),
                         notes: document.getElementById('notes-input').value
                     })
                 });
 
                 if (response.ok) {
+                    const resData = await response.json();
+                    if (resData.earned_commission > 0) {
+                        document.getElementById('earned-amount').innerText = resData.earned_commission.toLocaleString('id-ID');
+                        document.getElementById('commission-earned-box').classList.remove('hidden');
+                    } else {
+                        document.getElementById('commission-earned-box').classList.add('hidden');
+                    }
                     successModal.classList.remove('hidden');
                 } else {
                     alert('Failed to save data');

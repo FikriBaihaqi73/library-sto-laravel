@@ -16,9 +16,11 @@ class DashboardController extends Controller
         $totalBooks = Book::count();
         $verifiedBooks = StockOpname::where('status', 'verified')->count();
         
-        $userOpnameCount = StockOpname::where('user_id', auth()->id())
-            ->where('status', 'verified')
-            ->count();
+        $userOpname = StockOpname::where('user_id', auth()->id())
+            ->where('status', 'verified');
+        
+        $userOpnameCount = $userOpname->count();
+        $totalCommissionEarned = $userOpname->sum('earned_commission');
 
         // Simple Leaderboard: Top 5 users with most verified opnames
         $leaderboard = User::withCount(['stockOpnames' => function ($query) {
@@ -40,6 +42,7 @@ class DashboardController extends Controller
                 'total_books' => $totalBooks,
                 'verified_books' => $verifiedBooks, // Total already verified in system
                 'user_verified' => $userOpnameCount, // Current user contribution
+                'user_commission' => (float)$totalCommissionEarned,
             ],
             'leaderboard' => $leaderboard,
         ]);

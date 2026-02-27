@@ -50,17 +50,22 @@ class StockOpnameController extends Controller
              return response()->json(['message' => 'Book already verified by another user.'], 400);
         }
 
+        $commission = \App\Models\Setting::where('key', 'commission')->first();
+        $commissionValue = $commission ? (float)$commission->value : 0;
+
         $opname = StockOpname::create([
             'user_id' => auth()->id(),
             'book_id' => $request->book_id,
             'status' => $request->status,
             'condition' => $request->condition,
             'notes' => $request->notes,
+            'earned_commission' => $commissionValue,
         ]);
 
         return response()->json([
             'message' => 'Stock opname recorded successfully',
             'data' => $opname,
+            'earned_commission' => $commissionValue
         ]);
     }
 }

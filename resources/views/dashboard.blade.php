@@ -13,7 +13,7 @@
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 px-4 sm:px-0">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 px-4 sm:px-0">
             <!-- Total Books -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
                 <div class="flex items-center">
@@ -49,6 +49,19 @@
                     <div>
                         <p class="text-sm font-medium text-gray-500">Your STO</p>
                         <p class="text-3xl font-bold text-gray-900" id="stat-user-verified">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Your Commission -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-yellow-500">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-500 mr-4">
+                        <i class="fa-solid fa-wallet text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Your Commission</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-user-commission">-</p>
                     </div>
                 </div>
             </div>
@@ -103,6 +116,7 @@
             document.getElementById('stat-total-books').innerText = data.stats.total_books;
             document.getElementById('stat-verified-books').innerText = data.stats.verified_books;
             document.getElementById('stat-user-verified').innerText = data.stats.user_verified;
+            document.getElementById('stat-user-commission').innerText = 'Rp ' + data.stats.user_commission.toLocaleString('id-ID');
 
             // Update Leaderboard
             const leaderboardList = document.getElementById('leaderboard-list');

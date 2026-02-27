@@ -27,4 +27,6 @@ Route::group(['middleware' => ['auth:api', 'is_admin'], 'prefix' => 'admin'], fu
     Route::get('/stats', [\App\Http\Controllers\Api\Admin\StatsController::class, 'index']);
     Route::apiResource('books', \App\Http\Controllers\Api\Admin\BookController::class);
     Route::apiResource('users', \App\Http\Controllers\Api\Admin\UserController::class);
+    Route::get('/settings', [\App\Http\Controllers\Api\Admin\SettingController::class, 'index']);
+    Route::post('/settings', [\App\Http\Controllers\Api\Admin\SettingController::class, 'update']);
 });

@@ -101,11 +101,13 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', async () => {
+    const fetchStats = async () => {
         const token = localStorage.getItem('token');
-        if (!token) window.location.href = '/login';
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
 
-        // Fetch Stats
         try {
             const response = await fetch('/api/admin/stats', {
                 headers: {
@@ -187,7 +189,9 @@
         } catch (error) {
             console.error('Error fetching admin stats:', error);
         }
-    });
+    };
+
+    document.addEventListener('DOMContentLoaded', fetchStats);
 
     const commissionModal = document.getElementById('commission-modal');
     const commissionForm = document.getElementById('commission-form');
@@ -245,6 +249,7 @@
             if (res.ok) {
                 alert('Setting berhasil disimpan!');
                 closeCommissionModal();
+                fetchStats(); // Update dashboard immediately without page refresh
             } else {
                 alert('Gagal menyimpan setting');
             }
